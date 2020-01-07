@@ -56,18 +56,42 @@ function WebGLRenderState() {
 
 function WebGLRenderStates() {
 
-	var renderStates = {};
+	var renderStates = new WeakMap();
+
+	function onSceneDispose( event ) {
+
+		var scene = event.target;
+
+		scene.removeEventListener( 'dispose', onSceneDispose );
+
+		renderStates.delete( scene );
+
+	}
 
 	function get( scene, camera ) {
 
-		var hash = scene.id + ',' + camera.id;
+		var renderState;
 
-		var renderState = renderStates[ hash ];
-
-		if ( renderState === undefined ) {
+		if ( renderStates.has( scene ) === false ) {
 
 			renderState = new WebGLRenderState();
-			renderStates[ hash ] = renderState;
+			renderStates.set( scene, new WeakMap() );
+			renderStates.get( scene ).set( camera, renderState );
+
+			scene.addEventListener( 'dispose', onSceneDispose );
+
+		} else {
+
+			if ( renderStates.get( scene ).has( camera ) === false ) {
+
+				renderState = new WebGLRenderState();
+				renderStates.get( scene ).set( camera, renderState );
+
+			} else {
+
+				renderState = renderStates.get( scene ).get( camera );
+
+			}
 
 		}
 
@@ -77,7 +101,7 @@ function WebGLRenderStates() {
 
 	function dispose() {
 
-		renderStates = {};
+		renderStates = new WeakMap();
 
 	}
 

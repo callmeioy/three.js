@@ -6,7 +6,7 @@ import { NumberKeyframeTrack } from './tracks/NumberKeyframeTrack.js';
 import { QuaternionKeyframeTrack } from './tracks/QuaternionKeyframeTrack.js';
 import { StringKeyframeTrack } from './tracks/StringKeyframeTrack.js';
 import { VectorKeyframeTrack } from './tracks/VectorKeyframeTrack.js';
-import { _Math } from '../math/Math.js';
+import { MathUtils } from '../math/MathUtils.js';
 
 /**
  *
@@ -22,7 +22,7 @@ function AnimationClip( name, duration, tracks ) {
 	this.tracks = tracks;
 	this.duration = ( duration !== undefined ) ? duration : - 1;
 
-	this.uuid = _Math.generateUUID();
+	this.uuid = MathUtils.generateUUID();
 
 	// this means it should figure out its duration by scanning the tracks
 	if ( this.duration < 0 ) {
@@ -30,8 +30,6 @@ function AnimationClip( name, duration, tracks ) {
 		this.resetDuration();
 
 	}
-
-	this.optimize();
 
 }
 
@@ -407,6 +405,8 @@ Object.assign( AnimationClip.prototype, {
 
 		this.duration = duration;
 
+		return this;
+
 	},
 
 	trim: function () {
@@ -421,6 +421,20 @@ Object.assign( AnimationClip.prototype, {
 
 	},
 
+	validate: function () {
+
+		var valid = true;
+
+		for ( var i = 0; i < this.tracks.length; i ++ ) {
+
+			valid = valid && this.tracks[ i ].validate();
+
+		}
+
+		return valid;
+
+	},
+
 	optimize: function () {
 
 		for ( var i = 0; i < this.tracks.length; i ++ ) {
@@ -430,6 +444,20 @@ Object.assign( AnimationClip.prototype, {
 		}
 
 		return this;
+
+	},
+
+	clone: function () {
+
+		var tracks = [];
+
+		for ( var i = 0; i < this.tracks.length; i ++ ) {
+
+			tracks.push( this.tracks[ i ].clone() );
+
+		}
+
+		return new AnimationClip( this.name, this.duration, tracks );
 
 	}
 
