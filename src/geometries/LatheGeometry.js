@@ -1,5 +1,4 @@
 /**
- * @author astrodud / http://astrodud.isgreat.org/
  * @author zz85 / https://github.com/zz85
  * @author bhouston / http://clara.io
  * @author Mugen87 / https://github.com/Mugen87
@@ -129,8 +128,8 @@ function LatheBufferGeometry( points, segments, phiStart, phiLength ) {
 	// build geometry
 
 	this.setIndex( indices );
-	this.addAttribute( 'position', new Float32BufferAttribute( vertices, 3 ) );
-	this.addAttribute( 'uv', new Float32BufferAttribute( uvs, 2 ) );
+	this.setAttribute( 'position', new Float32BufferAttribute( vertices, 3 ) );
+	this.setAttribute( 'uv', new Float32BufferAttribute( uvs, 2 ) );
 
 	// generate normals
 
