@@ -11,6 +11,7 @@ export class LightShadow {
 
 	camera: Camera;
 	bias: number;
+	normalBias: number;
 	radius: number;
 	mapSize: Vector2;
 	map: RenderTarget;
